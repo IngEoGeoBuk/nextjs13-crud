@@ -1,10 +1,7 @@
-import React, {useState} from 'react'
+import React from 'react';
 
-const page = () => {
-  const [first, setFirst] = useState();
-  return (
-    <div>page</div>
-  )
-}
+const page = () => (
+  <div>page</div>
+);
 
-export default page
+export default page;
