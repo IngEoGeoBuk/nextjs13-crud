@@ -1,17 +1,8 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import getCurrentUser from '../actions/getCurrentUser';
+import React from 'react';
 
 function Home() {
-  useEffect(() => {
-    const loadCurrentUser = async () => {
-      const currentUser = await getCurrentUser();
-      console.log(currentUser);
-    };
-    loadCurrentUser();
-  }, []);
-
   return <div>home</div>;
 }
 

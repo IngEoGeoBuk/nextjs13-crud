@@ -1,6 +1,32 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { signOut, signIn, useSession } from 'next-auth/react';
+import Spinner from './common/spinner';
+
+function LoginAndLogout() {
+  const { status } = useSession();
+
+  return (
+    <div className="flex-2 w-32 text-white flex justify-around gap-2">
+      {status === 'loading' ? (
+        <Spinner />
+      ) : (
+        <div>
+          {status === 'authenticated' ? (
+            <button type="button" onClick={() => signOut()} className="round-none">
+              logout
+            </button>
+          ) : (
+            <button type="button" onClick={() => signIn('google')} className="round-none">
+              login
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function Header() {
   return (
@@ -30,6 +56,7 @@ function Header() {
           </ul>
         </nav>
       </div>
+      <LoginAndLogout />
     </header>
   );
 }

@@ -9,6 +9,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import Footer from './components/footer';
 import Header from './components/header';
 import ErrorFallback from './components/errorFallback';
+import AuthProvider from './context/auth.provider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -25,12 +26,14 @@ function RootLayout({ children }: { children: React.ReactNode }) {
       <body className={inter.className}>
         <div className="md:container md:mx-auto bg-red-400">
           <ErrorBoundary FallbackComponent={ErrorFallback}>
-            <QueryClientProvider client={queryClient}>
-              <Header />
-              <main className="flex items-center">{children}</main>
-              <Footer />
-              <ReactQueryDevtools initialIsOpen />
-            </QueryClientProvider>
+            <AuthProvider>
+              <QueryClientProvider client={queryClient}>
+                <Header />
+                <main className="flex items-center">{children}</main>
+                <Footer />
+                <ReactQueryDevtools initialIsOpen />
+              </QueryClientProvider>
+            </AuthProvider>
           </ErrorBoundary>
         </div>
       </body>
