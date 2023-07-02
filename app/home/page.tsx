@@ -3,6 +3,8 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import React, { useState } from 'react';
+import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import Spinner from '../components/common/spinner';
 import AlertBox from '../components/common/alertBox';
 import BoardList from './boardList';
@@ -14,6 +16,7 @@ async function getBoards(page = 0) {
 }
 
 function Home() {
+  const { status } = useSession();
   const [page, setPage] = useState(1);
 
   const { isLoading, error, data } = useQuery({
@@ -44,6 +47,20 @@ function Home() {
           clickNext={() => setPage(data.nextPage)}
           pageList={data.pageList}
         />
+        {status === 'loading' ? (
+          <Spinner />
+        ) : (
+          <div className="text-right">
+            {status === 'authenticated' ? (
+              <Link href="/boards/write" className="btn-main">
+                create
+              </Link>
+            ) : (
+              null
+            )}
+          </div>
+        )}
+
       </div>
     );
   }

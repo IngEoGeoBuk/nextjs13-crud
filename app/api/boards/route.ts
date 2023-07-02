@@ -70,6 +70,11 @@ export async function POST(
       data: {
         userId: currentUser.id,
         email: currentUser.email,
+        title: body.title.substring(0, 30),
+        description: body.title.substring(0, 300),
+        like: 0,
+        dislike: 0,
+        createdAt: new Date(),
         updatedAt: null,
         ...body,
       },

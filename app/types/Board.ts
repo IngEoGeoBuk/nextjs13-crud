@@ -1,12 +1,18 @@
 export interface Board {
-  id?: string;
-  userId?: string;
+  id: string;
+  userId: string;
+  email: string;
   title: string;
-  email?: string;
   description: string;
   players: number[];
-  createdAt: Date;
-  updatedAt?: Date;
   like: number;
   dislike: number;
+  createdAt: Date;
+  updatedAt?: Date;
+}
+
+export interface CreateBoard {
+  title: string;
+  description: string;
+  players: number[];
 }
