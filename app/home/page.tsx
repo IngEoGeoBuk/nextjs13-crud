@@ -36,8 +36,12 @@ function Home() {
       <div className="w-full">
         <BoardList board={data.board} />
         <Pagination
+          page={page}
+          onChangePage={(getPage: number) => setPage(getPage)}
           hasPrevious={data.hasPrevious}
+          clickPrevious={() => setPage(data.previousPage)}
           hasNext={data.hasNext}
+          clickNext={() => setPage(data.nextPage)}
           pageList={data.pageList}
         />
       </div>

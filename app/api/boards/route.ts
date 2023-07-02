@@ -41,10 +41,15 @@ export async function GET(
       return array;
     };
 
+    const hasPrevious = page > paginatedList;
+    const hasNext = Math.ceil(page / paginatedList) < Math.ceil(total / perPage / paginatedList);
+
     return NextResponse.json({
       board,
-      hasPrevious: page > paginatedList,
-      hasNext: Math.ceil(page / paginatedList) < Math.ceil(total / perPage / paginatedList),
+      hasPrevious,
+      previousPage: hasPrevious ? (Math.ceil(page / paginatedList) - 1) * paginatedList : null,
+      nextPage: hasNext ? Math.ceil(page / paginatedList) * paginatedList + 1 : null,
+      hasNext,
       pageList: range(startPageInList, endPageInList),
     });
   } catch (error) {
