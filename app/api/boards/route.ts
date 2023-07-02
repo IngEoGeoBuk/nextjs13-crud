@@ -64,6 +64,8 @@ export async function POST(
     const board = await prisma!.board.create({
       data: {
         userId: currentUser.id,
+        email: currentUser.email,
+        updatedAt: null,
         ...body,
       },
     });

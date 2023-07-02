@@ -1,10 +1,8 @@
-import { User } from '@prisma/client';
-
 export interface Board {
   id?: string;
-  user?: User
   userId?: string;
   title: string;
+  email?: string;
   description: string;
   players: number[];
   createdAt: Date;

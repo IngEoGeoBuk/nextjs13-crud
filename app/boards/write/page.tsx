@@ -22,7 +22,6 @@ function Create() {
     description: 'tett',
     players: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
     createdAt: new Date(),
-    updatedAt: new Date(),
     like: 0,
     dislike: 0,
   };
@@ -34,7 +33,7 @@ function Create() {
       router.push('/');
     },
     onError: (error) => {
-      console.log(error);
+      throw error;
     },
   });
 

@@ -24,12 +24,12 @@ function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="md:container md:mx-auto bg-red-400">
+        <div className="w-full mx-auto max-w-screen-xl">
           <ErrorBoundary FallbackComponent={ErrorFallback}>
             <AuthProvider>
               <QueryClientProvider client={queryClient}>
                 <Header />
-                <main className="flex items-center">{children}</main>
+                <main>{children}</main>
                 <Footer />
                 <ReactQueryDevtools initialIsOpen />
               </QueryClientProvider>
