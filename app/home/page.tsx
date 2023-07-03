@@ -9,6 +9,7 @@ import Spinner from '../components/common/spinner';
 import AlertBox from '../components/common/alertBox';
 import BoardList from './boardList';
 import Pagination from './pagination';
+import BoardListSkeleton from '../components/Skeleton/boardList';
 
 async function getBoards(page = 0) {
   const { data } = await axios.get(`/api/boards?page=${page}`);
@@ -27,7 +28,7 @@ function Home() {
   });
 
   if (isLoading) {
-    return <div className="w-full flex items-center justify-center h-20"><Spinner /></div>;
+    return <BoardListSkeleton />;
   }
 
   if (error) {
