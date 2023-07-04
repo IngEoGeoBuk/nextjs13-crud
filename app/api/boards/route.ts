@@ -11,10 +11,6 @@ export async function GET(
   try {
     const perPage = 10;
     const paginatedList = 5;
-    const currentUser = await getCurrentUser();
-    if (!currentUser?.id || !currentUser?.email) {
-      return new NextResponse('Unauthorized', { status: 401 });
-    }
     const page = Number(new URL(request.url).searchParams.get('page'));
 
     const total = await prisma!.board.count();
