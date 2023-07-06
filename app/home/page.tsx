@@ -53,7 +53,7 @@ function Home() {
         ) : (
           <div className="text-right">
             {status === 'authenticated' ? (
-              <Link href="/boards/write" className="btn-main">
+              <Link href="/boards/write" className="btn-primary">
                 create
               </Link>
             ) : (

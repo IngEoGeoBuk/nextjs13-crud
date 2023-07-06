@@ -1,7 +1,7 @@
 import React from 'react';
 
 const page = () => (
-  <div>page</div>
+  <div>로그인 해라.</div>
 );
 
 export default page;

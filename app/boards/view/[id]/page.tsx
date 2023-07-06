@@ -3,12 +3,13 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
+import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import axios from 'axios';
 import BoardDetail from '@/app/components/Skeleton/boardDetail';
 import AlertBox from '@/app/components/common/alertBox';
-import { Board } from '@/app/types/Board';
 import { useSession } from 'next-auth/react';
+import { Board } from '@prisma/client';
 import Modal from './modal';
 
 async function getBoard(id: string) {
@@ -48,8 +49,9 @@ function Index() {
           <p className="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">{data.description}</p>
           {email === data.email && (
             <div className="text-right">
+              <Link href={`/boards/modify/${id}`} className="btn-secondary">modify</Link>
               <button
-                className="btn-main"
+                className="btn-primary"
                 type="button"
                 onClick={() => setShowModal(true)}
               >

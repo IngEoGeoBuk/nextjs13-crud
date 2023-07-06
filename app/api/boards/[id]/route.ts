@@ -46,3 +46,33 @@ export async function DELETE(
     return new NextResponse('Error', { status: 500 });
   }
 }
+
+export async function PUT(
+  request: Request,
+  { params }: { params: { id: string } },
+) {
+  try {
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      return NextResponse.error();
+    }
+    const { id } = params;
+    if (!id || typeof id !== 'string') {
+      throw new Error('Invalid ID');
+    }
+    const body = await request.json();
+    const board = await prisma!.board.update({
+      data: {
+        title: body.title.substring(0, 30),
+        description: body.title.substring(0, 300),
+        ...body,
+      },
+      where: {
+        id,
+      },
+    });
+    return NextResponse.json(board);
+  } catch (error) {
+    return new NextResponse('Error', { status: 500 });
+  }
+}

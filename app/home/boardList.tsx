@@ -7,7 +7,7 @@ import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import advanced from 'dayjs/plugin/advancedFormat';
-import { Board } from '../types/Board';
+import { Board } from '@prisma/client';
 
 function TableList({ item } : { item: Board }) {
   dayjs.extend(utc);
