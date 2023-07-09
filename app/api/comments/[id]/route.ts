@@ -1,26 +1,7 @@
 /* eslint-disable import/prefer-default-export */
-// export async default로 하니까 안 됨.
 import { NextResponse } from 'next/server';
 import prisma from '@/app/libs/prismadb';
 import getCurrentUser from '@/app/actions/getCurrentUser';
-
-// request 안 쓰여도 선언해야 함. 지우면 에러 남.
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } },
-) {
-  try {
-    const { id } = params;
-    const data = await prisma!.board.findUnique({
-      where: {
-        id,
-      },
-    });
-    return NextResponse.json(data);
-  } catch (error) {
-    return new NextResponse('Error', { status: 500 });
-  }
-}
 
 export async function DELETE(
   request: Request,
@@ -36,12 +17,12 @@ export async function DELETE(
     if (!id || typeof id !== 'string') {
       throw new Error('Invalid ID');
     }
-    const board = await prisma?.board.delete({
+    const comments = await prisma?.comment.delete({
       where: {
         id,
       },
     });
-    return NextResponse.json(board);
+    return NextResponse.json(comments);
   } catch (error) {
     return new NextResponse('Error', { status: 500 });
   }
@@ -61,17 +42,16 @@ export async function PUT(
       throw new Error('Invalid ID');
     }
     const body = await request.json();
-    const board = await prisma!.board.update({
+    const comment = await prisma!.comment.update({
       data: {
-        title: body.title.substring(0, 30),
-        description: body.title.substring(0, 300),
+        content: body.content.substring(0, 100),
         ...body,
       },
       where: {
         id,
       },
     });
-    return NextResponse.json(board);
+    return NextResponse.json(comment);
   } catch (error) {
     return new NextResponse('Error', { status: 500 });
   }

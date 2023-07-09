@@ -1,13 +1,13 @@
 'use client';
 
-import axios from 'axios';
 import React, { useState } from 'react';
+import axios from 'axios';
 import { useSession } from 'next-auth/react';
 
 import { useParams, redirect, useRouter } from 'next/navigation';
 import { Board } from '@prisma/client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import BoardDetail from '@/app/components/Skeleton/boardDetail';
+import BoardDetail from '@/app/boards/view/[id]/components/skeleton';
 import AlertBox from '@/app/components/common/alertBox';
 import { CreateBoard } from '@/app/types/Board';
 

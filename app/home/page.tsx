@@ -7,9 +7,9 @@ import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import Spinner from '../components/common/spinner';
 import AlertBox from '../components/common/alertBox';
-import BoardList from './boardList';
-import Pagination from './pagination';
-import BoardListSkeleton from '../components/Skeleton/boardList';
+import BoardList from './components/boardList';
+import Pagination from './components/pagination';
+import BoardListSkeleton from './components/skeleton';
 
 async function getBoards(page = 0) {
   const { data } = await axios.get(`/api/boards?page=${page}`);
@@ -61,7 +61,6 @@ function Home() {
             )}
           </div>
         )}
-
       </div>
     );
   }

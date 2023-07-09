@@ -2,18 +2,10 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-
-import dayjs from 'dayjs';
-import timezone from 'dayjs/plugin/timezone';
-import utc from 'dayjs/plugin/utc';
-import advanced from 'dayjs/plugin/advancedFormat';
 import { Board } from '@prisma/client';
+import dateFormat from '../../hook/dateFormat';
 
 function TableList({ item } : { item: Board }) {
-  dayjs.extend(utc);
-  dayjs.extend(timezone);
-  dayjs.extend(advanced);
-
   const router = useRouter();
 
   return (
@@ -31,9 +23,7 @@ function TableList({ item } : { item: Board }) {
         {item.email}
       </td>
       <td className="px-6 py-4">
-        {dayjs(item.createdAt)
-          .tz('Asia/Seoul')
-          .format('YYYY.MM.DD HH:mm')}
+        {dateFormat(item.createdAt)}
       </td>
       <td className="px-6 py-4">
         {item.like}
