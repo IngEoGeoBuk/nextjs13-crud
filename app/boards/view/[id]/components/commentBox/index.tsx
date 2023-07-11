@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
-import { Comment } from '@prisma/client';
+import { Comment, Reply } from '@prisma/client';
 import { useParams } from 'next/navigation';
 import AlertBox from '@/app/components/common/alertBox';
 
@@ -11,6 +11,10 @@ import AddCommentBox from './components/addCommentBox';
 import CommentItem from './components/commentItem';
 import Modal from './components/modal';
 import Skeleton from './components/skeleton';
+
+interface ViewComment extends Comment {
+  replies: Reply[];
+}
 
 async function getComments(id: string) {
   const { data } = await axios.get(`/api/boards/comments/${id}`);
@@ -22,7 +26,7 @@ function Index() {
   const email = useSession().data?.user?.email;
   const [showModal, setShowModal] = useState<string>('');
 
-  const { isLoading, error, data } = useQuery<Comment[]>({
+  const { isLoading, error, data } = useQuery<ViewComment[]>({
     queryKey: ['comments', { board: id }],
     queryFn: () => getComments(id),
     keepPreviousData: true,
@@ -44,7 +48,7 @@ function Index() {
         {data?.map((item) => (
           <CommentItem
             key={item.id}
-            item={item}
+            comment={item}
             setShowModal={setShowModal}
           />
         ))}

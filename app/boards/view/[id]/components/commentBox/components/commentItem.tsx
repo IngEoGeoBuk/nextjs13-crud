@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Comment } from '@prisma/client';
+import { Comment, Reply } from '@prisma/client';
 import dateFormat from '@/app/hook/dateFormat';
 import { useSession } from 'next-auth/react';
 
@@ -8,13 +8,16 @@ import ReplyBox from '../../replyBox';
 import EditCommentBox from './editCommentBox';
 import AddReplyBox from '../../replyBox/components/addReplyBox';
 
-interface Interface {
-  item: Comment
-  setShowModal: (value: string) => void;
-
+interface ViewComment extends Comment {
+  replies: Reply[];
 }
 
-function CommentItem({ item, setShowModal }: Interface) {
+interface Interface {
+  comment: ViewComment
+  setShowModal: (value: string) => void;
+}
+
+function CommentItem({ comment, setShowModal }: Interface) {
   const email = useSession().data?.user?.email;
   const [showModify, setShowModify] = useState<string>('');
   const [showReply, setShowReply] = useState<string>('');
@@ -25,22 +28,22 @@ function CommentItem({ item, setShowModal }: Interface) {
         <footer className="flex justify-between items-center mb-2">
           <div className="flex items-center">
             <p className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white">
-              {item.email}
+              {comment.email}
             </p>
             <p className="text-sm text-gray-600 dark:text-gray-400">
               <time>
-                {item.updatedAt
-                  ? `${dateFormat(item.createdAt)} (Edited)`
-                  : dateFormat(item.createdAt)}
+                {comment.updatedAt
+                  ? `${dateFormat(comment.createdAt)} (Edited)`
+                  : dateFormat(comment.createdAt)}
               </time>
             </p>
           </div>
-          {email === item.email && (
+          {email === comment.email && (
             <div className="flex gap-4">
               <button
                 type="button"
                 onClick={() => {
-                  setShowModify(item.id);
+                  setShowModify(comment.id);
                 }}
               >
                 <svg className="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
@@ -50,7 +53,7 @@ function CommentItem({ item, setShowModal }: Interface) {
               </button>
               <button
                 type="button"
-                onClick={() => setShowModal(item.id)}
+                onClick={() => setShowModal(comment.id)}
               >
                 <svg className="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
                   <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5h16M7 8v8m4-8v8M7 1h4a1 1 0 0 1 1 1v3H6V2a1 1 0 0 1 1-1ZM3 5h12v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5Z" />
@@ -59,37 +62,39 @@ function CommentItem({ item, setShowModal }: Interface) {
             </div>
           )}
         </footer>
-        {showModify === item.id
+        {showModify === comment.id
           ? (
             <EditCommentBox
-              defaultValue={item.content}
+              defaultValue={comment.content}
               showModify={showModify}
               setShowModify={setShowModify}
             />
           ) : (
             <p className="text-gray-500 dark:text-gray-400">
-              {item.content}
+              {comment.content}
             </p>
           )}
-        <div className="flex items-center mt-4 space-x-4">
-          <button
-            type="button"
-            className="flex items-center text-sm text-gray-500 hover:underline dark:text-gray-400"
-            onClick={() => setShowReply(item.id)}
-          >
-            <svg aria-hidden="true" className="mr-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
-            Reply
-          </button>
-        </div>
+        {email && (
+          <div className="flex items-center mt-4 space-x-4">
+            <button
+              type="button"
+              className="flex items-center text-sm text-gray-500 hover:underline dark:text-gray-400"
+              onClick={() => setShowReply(comment.id)}
+            >
+              <svg aria-hidden="true" className="mr-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+              Reply
+            </button>
+          </div>
+        )}
       </article>
-      {showReply === item.id && (
+      {showReply === comment.id && (
         <AddReplyBox
           showReply={showReply}
           setShowReply={setShowReply}
         />
       )}
       <ReplyBox
-        commentId={item.id}
+        replies={comment.replies}
       />
     </>
   );

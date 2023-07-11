@@ -14,6 +14,9 @@ export async function GET(
       where: {
         boardId: id,
       },
+      include: {
+        replies: true,
+      },
     });
     return NextResponse.json(data);
   } catch (error) {

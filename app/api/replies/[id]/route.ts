@@ -17,13 +17,12 @@ export async function DELETE(
     if (!id || typeof id !== 'string') {
       throw new Error('Invalid ID');
     }
-    // 댓글에 답글 있을 경우 진짜로 지우면 안 됨.
-    const comments = await prisma?.comment.delete({
+    const reply = await prisma?.reply.delete({
       where: {
         id,
       },
     });
-    return NextResponse.json(comments);
+    return NextResponse.json(reply);
   } catch (error) {
     return new NextResponse('Error', { status: 500 });
   }
@@ -43,17 +42,16 @@ export async function PUT(
       throw new Error('Invalid ID');
     }
     const body = await request.json();
-    const comment = await prisma!.comment.update({
+    const reply = await prisma!.reply.update({
       data: {
         content: body.content.substring(0, 100),
-        deletedAt: null,
         ...body,
       },
       where: {
         id,
       },
     });
-    return NextResponse.json(comment);
+    return NextResponse.json(reply);
   } catch (error) {
     return new NextResponse('Error', { status: 500 });
   }

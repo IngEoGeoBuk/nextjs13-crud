@@ -1,37 +1,43 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
 import { useParams } from 'next/navigation';
 
 interface Interface {
-  showReply: string;
-  setShowReply: (value: string) => void;
+  defaultValue: string;
+  showModify: string;
+  setShowModify: (value: string) => void;
 }
 
-function AddReplyBox({ showReply, setShowReply }: Interface) {
+function EditReplyBox({ defaultValue, showModify, setShowModify } : Interface) {
   const { id } = useParams();
-
   const queryClient = useQueryClient();
-  const [value, setValue] = useState<string>('');
 
-  const addReply = async (content: string) => axios.post('/api/replies', { boardId: id, commentId: showReply, content });
-  const addReplyMutation = useMutation(addReply, {
+  const [value, setValue] = useState<string>(defaultValue);
+
+  const updateReply = async (content: string) => axios.put(`/api/replies/${showModify}`, {
+    content,
+  });
+  const updateReplyMutation = useMutation(updateReply, {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['comments', { board: id }] });
+      setShowModify('');
       setValue('');
-      setShowReply('');
     },
-    onError: (error) => {
-      throw error;
+    onError: (err) => {
+      throw err;
     },
   });
+
   const handleSubmit = (event: any) => {
     event.preventDefault();
-    addReplyMutation.mutate(value);
+    updateReplyMutation.mutate(value);
   };
+
   return (
     <form onSubmit={handleSubmit}>
-      <div className="mb-4 lg:ml-12 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
+      <div className="w-full mb-4 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
         <div className="px-4 py-2 bg-white rounded-t-lg dark:bg-gray-800">
           <textarea
             id="reply"
@@ -49,13 +55,14 @@ function AddReplyBox({ showReply, setShowReply }: Interface) {
             type="submit"
             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
           >
-            Add reply
+            Edit reply
           </button>
           <button
             type="button"
             className="btn-secondary"
             onClick={() => {
-              setShowReply('');
+              setShowModify('');
+              setValue('');
             }}
           >
             Cancel
@@ -66,4 +73,4 @@ function AddReplyBox({ showReply, setShowReply }: Interface) {
   );
 }
 
-export default AddReplyBox;
+export default EditReplyBox;

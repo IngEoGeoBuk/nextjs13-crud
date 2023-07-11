@@ -12,17 +12,18 @@ export async function POST(
       return new NextResponse('Unauthorized', { status: 401 });
     }
     const data = await request.json();
-    const board = await prisma!.comment.create({
+    const comment = await prisma!.comment.create({
       data: {
         userId: currentUser.id,
         email: currentUser.email,
         content: data.content.substring(0, 100),
         createdAt: new Date(),
         updatedAt: null,
+        deletedAt: null,
         ...data,
       },
     });
-    return NextResponse.json(board);
+    return NextResponse.json(comment);
   } catch (error) {
     return new NextResponse('Error', { status: 500 });
   }

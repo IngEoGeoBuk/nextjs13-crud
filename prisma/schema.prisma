@@ -73,7 +73,7 @@ model Comment {
   content String
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt
-
+  deletedAt DateTime? @updatedAt
   replies Reply[]
 }
 
@@ -83,7 +83,7 @@ model Reply {
   userId String @db.ObjectId
   board Board @relation(fields: [boardId], references: [id], onDelete: Cascade)
   boardId String @db.ObjectId
-  comment Comment @relation(fields: [commentId], references: [id])
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
   commentId String @db.ObjectId
 
   email String
