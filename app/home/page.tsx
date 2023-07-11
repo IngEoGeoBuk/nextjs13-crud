@@ -21,7 +21,7 @@ function Home() {
   const [page, setPage] = useState(1);
 
   const { isLoading, error, data } = useQuery({
-    queryKey: ['boards', page],
+    queryKey: ['boards', { page }],
     queryFn: () => getBoards(page),
     keepPreviousData: true,
     staleTime: 5000,

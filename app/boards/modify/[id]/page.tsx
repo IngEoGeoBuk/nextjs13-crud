@@ -38,7 +38,7 @@ function Index() {
   const updateBoard = async (board: CreateBoard) => axios.put(`/api/boards/${id}`, board);
   const updateBoardMutation = useMutation(updateBoard, {
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['boards'] });
+      queryClient.invalidateQueries({ queryKey: ['boards', id] });
       router.push(`/boards/view/${id}`);
     },
     onError: (err) => {

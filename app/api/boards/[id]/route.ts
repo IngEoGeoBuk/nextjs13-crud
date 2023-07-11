@@ -15,9 +15,6 @@ export async function GET(
       where: {
         id,
       },
-      include: {
-        comments: true,
-      },
     });
     return NextResponse.json(data);
   } catch (error) {

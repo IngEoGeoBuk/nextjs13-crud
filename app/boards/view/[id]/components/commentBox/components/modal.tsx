@@ -1,4 +1,6 @@
 import React from 'react';
+import { useParams } from 'next/navigation';
+
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 
@@ -8,11 +10,12 @@ interface Interface {
 }
 
 function Modal({ showModal, setShowModal }: Interface) {
+  const { id } = useParams();
   const queryClient = useQueryClient();
   const deleteComment = async () => axios.delete(`/api/comments/${showModal}`);
   const deleteCommentMutation = useMutation(deleteComment, {
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['comments'] });
+      queryClient.invalidateQueries({ queryKey: ['comments', { board: id }] });
       setShowModal('');
     },
     onError: (error) => {

@@ -22,6 +22,7 @@ model User {
   accounts Account[]
   boards Board[]
   comments Comment[]
+  replies Reply[]
 }
 
 model Account {
@@ -47,6 +48,7 @@ model Board {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   user User @relation(fields: [userId], references: [id])
   userId String @db.ObjectId
+
   email String
   title String
   description String
@@ -55,7 +57,9 @@ model Board {
   updatedAt DateTime? @updatedAt
   like Int
   dislike Int
+
   comments Comment[]
+  replies Reply[]
 }
 
 model Comment {
@@ -64,6 +68,24 @@ model Comment {
   userId String @db.ObjectId
   board Board @relation(fields: [boardId], references: [id], onDelete: Cascade)
   boardId String @db.ObjectId
+
+  email String
+  content String
+  createdAt DateTime @default(now())
+  updatedAt DateTime? @updatedAt
+
+  replies Reply[]
+}
+
+model Reply {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  user User @relation(fields: [userId], references: [id])
+  userId String @db.ObjectId
+  board Board @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  boardId String @db.ObjectId
+  comment Comment @relation(fields: [commentId], references: [id])
+  commentId String @db.ObjectId
+
   email String
   content String
   createdAt DateTime @default(now())

@@ -10,13 +10,9 @@ import axios from 'axios';
 import BoardDetailSkeleton from '@/app/boards/view/[id]/components/skeleton';
 import AlertBox from '@/app/components/common/alertBox';
 import { useSession } from 'next-auth/react';
-import { Board, Comment } from '@prisma/client';
+import { Board } from '@prisma/client';
 import Modal from './components/modal';
 import CommentBox from './components/commentBox';
-
-interface ViewBoard extends Board {
-  comments: Comment[];
-}
 
 async function getBoard(id: string) {
   const { data } = await axios.get(`/api/boards/${id}`);
@@ -27,7 +23,7 @@ function Index() {
   const { id } = useParams();
   const email = useSession().data?.user?.email;
 
-  const { isLoading, error, data } = useQuery<ViewBoard>({
+  const { isLoading, error, data } = useQuery<Board>({
     queryKey: ['boards', id],
     queryFn: () => getBoard(id),
     keepPreviousData: true,
@@ -59,7 +55,7 @@ function Index() {
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Description</h3>
           <p className="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">{data.description}</p>
           <br />
-          <CommentBox comments={data.comments} />
+          <CommentBox />
           {email === data.email && (
             <div className="text-right">
               <Link href={`/boards/modify/${id}`} className="btn-secondary">modify</Link>

@@ -14,7 +14,7 @@ function Modal({ setShowModal }: Interface) {
   const deleteBoard = async () => axios.delete(`/api/boards/${id}`);
   const deleteBoardMutation = useMutation(deleteBoard, {
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['boards'] });
+      queryClient.invalidateQueries({ queryKey: ['boards', id] });
       router.push('/');
     },
     onError: (error) => {
