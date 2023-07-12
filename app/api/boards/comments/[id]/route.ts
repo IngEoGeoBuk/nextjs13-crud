@@ -18,7 +18,17 @@ export async function GET(
         replies: true,
       },
     });
-    return NextResponse.json(data);
+    const filteredData = data.map((item) => (
+      item.deletedAt
+        ? {
+          ...item,
+          userId: '',
+          email: '',
+          content: '',
+        }
+        : item
+    ));
+    return NextResponse.json(filteredData);
   } catch (error) {
     return new NextResponse('Error', { status: 500 });
   }
