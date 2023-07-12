@@ -11,16 +11,16 @@ interface Interface {
   setShowModify: (value: string) => void;
 }
 
-function EditCommentBox({ defaultValue, showModify, setShowModify } : Interface) {
+function EditReplyBox({ defaultValue, showModify, setShowModify } : Interface) {
   const { id } = useParams();
   const queryClient = useQueryClient();
 
   const [value, setValue] = useState<string>(defaultValue);
 
-  const updateComment = async (content: string) => axios.put(`/api/comments/${showModify}`, {
+  const updateReply = async (content: string) => axios.put(`/api/replies/${showModify}`, {
     content,
   });
-  const updateCommentMutation = useMutation(updateComment, {
+  const updateReplyMutation = useMutation(updateReply, {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['comments', { board: id }] });
       setShowModify('');
@@ -33,13 +33,13 @@ function EditCommentBox({ defaultValue, showModify, setShowModify } : Interface)
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
-    updateCommentMutation.mutate(value);
+    updateReplyMutation.mutate(value);
   };
 
   return (
     <EditFrame
       handleSubmit={handleSubmit}
-      type="comment"
+      type="reply"
       value={value}
       setValue={setValue}
       cancelFunc={() => {
@@ -50,4 +50,4 @@ function EditCommentBox({ defaultValue, showModify, setShowModify } : Interface)
   );
 }
 
-export default EditCommentBox;
+export default EditReplyBox;

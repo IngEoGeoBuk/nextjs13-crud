@@ -3,7 +3,7 @@ import { useSession } from 'next-auth/react';
 
 import { Reply } from '@prisma/client';
 import dateFormat from '@/app/hook/dateFormat';
-import EditReplyBox from './edilReplyBox';
+import EditReplyBox from './editReplyBox';
 
 interface Interface {
   reply: Reply
