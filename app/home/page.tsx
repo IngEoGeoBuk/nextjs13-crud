@@ -1,9 +1,12 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams, redirect } from 'next/navigation';
+
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+
 import { useSession } from 'next-auth/react';
 import Spinner from '../components/common/spinner';
 import AlertBox from '../components/common/alertBox';
@@ -11,21 +14,28 @@ import BoardList from './components/boardList';
 import Pagination from './components/pagination';
 import BoardListSkeleton from './components/skeleton';
 
-async function getBoards(page = 0) {
-  const { data } = await axios.get(`/api/boards?page=${page}`);
+async function getBoards(page = 0, type = '') {
+  const typeQuery = type ? `&type=${type}` : '';
+  const { data } = await axios.get(`/api/boards?page=${page}${typeQuery}`);
   return data;
 }
 
 function Home() {
-  const { status } = useSession();
+  const searchParams = useSearchParams();
+  const type = searchParams.get('type') ?? '';
+  const { data: session, status } = useSession();
   const [page, setPage] = useState(1);
 
   const { isLoading, error, data } = useQuery({
-    queryKey: ['boards', { page }],
-    queryFn: () => getBoards(page),
+    queryKey: ['boards', { page }, { type }],
+    queryFn: () => getBoards(page, type),
     keepPreviousData: true,
     staleTime: 5000,
   });
+
+  if (type === 'my' && !session?.user?.email) {
+    redirect('/signin');
+  }
 
   if (isLoading) {
     return <BoardListSkeleton />;

@@ -9,9 +9,16 @@ export async function GET(
   request: Request,
 ) {
   try {
+    const currentUser = await getCurrentUser();
+
     const perPage = 10;
     const paginatedList = 5;
     const page = Number(new URL(request.url).searchParams.get('page'));
+    const type = new URL(request.url).searchParams.get('type');
+
+    if (type === 'my' && !currentUser) {
+      return NextResponse.error();
+    }
 
     const total = await prisma!.board.count();
     const board = await prisma!.board.findMany({
@@ -19,6 +26,9 @@ export async function GET(
       take: perPage,
       orderBy: {
         createdAt: 'desc',
+      },
+      where: {
+        ...(type === 'my' ? { email: currentUser!.email! } : {}),
       },
     });
 

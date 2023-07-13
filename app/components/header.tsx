@@ -27,6 +27,7 @@ function LoginAndLogout() {
 }
 
 function Header() {
+  const { data: session } = useSession();
   const router = useRouter();
 
   return (
@@ -57,11 +58,13 @@ function Header() {
                 <Link href="/" className="header-item">Home</Link>
               </li>
               <li>
-                <Link href="/best" className="header-item">Best</Link>
+                <Link href="?type=best" className="header-item">Best</Link>
               </li>
-              <li>
-                <Link href="/my" className="header-item">My</Link>
-              </li>
+              {session && (
+                <li>
+                  <Link href="?type=my" className="header-item">My</Link>
+                </li>
+              )}
               <LoginAndLogout />
             </ul>
           </div>
