@@ -19,6 +19,16 @@ export async function GET(
     if (type === 'my' && !currentUser) {
       return NextResponse.error();
     }
+    const returnWhereQuery = (_type: string | null) => {
+      switch (_type) {
+        case null:
+          return {};
+        case 'my':
+          return { email: currentUser!.email! };
+        default:
+          return {};
+      }
+    };
 
     const total = await prisma!.board.count();
     const board = await prisma!.board.findMany({
@@ -27,8 +37,11 @@ export async function GET(
       orderBy: {
         createdAt: 'desc',
       },
-      where: {
-        ...(type === 'my' ? { email: currentUser!.email! } : {}),
+      where: returnWhereQuery(type),
+      include: {
+        _count: {
+          select: { likes: true },
+        },
       },
     });
 
@@ -51,7 +64,10 @@ export async function GET(
     const hasNext = Math.ceil(page / paginatedList) < Math.ceil(total / perPage / paginatedList);
 
     return NextResponse.json({
-      board,
+      board: board.map((item) => (
+        // eslint-disable-next-line no-underscore-dangle
+        { ...item, likes: item._count.likes }
+      )),
       hasPrevious,
       previousPage: hasPrevious ? (Math.ceil(page / paginatedList) - 1) * paginatedList : null,
       nextPage: hasNext ? Math.ceil(page / paginatedList) * paginatedList + 1 : null,

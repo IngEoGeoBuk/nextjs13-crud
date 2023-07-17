@@ -2,10 +2,10 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { Board } from '@prisma/client';
+import { BoardLike } from '@/app/types/Board';
 import dateFormat from '../../hook/dateFormat';
 
-function TableList({ item } : { item: Board }) {
+function TableList({ item } : { item: BoardLike }) {
   const router = useRouter();
 
   return (
@@ -26,13 +26,13 @@ function TableList({ item } : { item: Board }) {
         {dateFormat(item.createdAt)}
       </td>
       <td className="px-6 py-4">
-        0
+        {String(item.likes)}
       </td>
     </tr>
   );
 }
 
-function BoardList({ board }: { board: Board[] }) {
+function BoardList({ board }: { board: BoardLike[] }) {
   return (
     <div className="relative overflow-x-auto">
       <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -53,7 +53,7 @@ function BoardList({ board }: { board: Board[] }) {
           </tr>
         </thead>
         <tbody>
-          {board.map((item: Board) => <TableList key={item.id} item={item} />)}
+          {board.map((item: BoardLike) => <TableList key={item.id} item={item} />)}
         </tbody>
       </table>
     </div>

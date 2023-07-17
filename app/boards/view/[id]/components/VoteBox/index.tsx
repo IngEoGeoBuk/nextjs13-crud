@@ -1,3 +1,7 @@
+// 추천 취소 기능 안 넣는 이유
+// 1. request 많아짐 (추천 -> 추천 취소 -> 추천 이렇게 번복하는 사람들 있는데, 그때마다 request)
+// 2. 사용자 수 많아 보이게 하기 위해 (추천 수가 많을 수록 좋음)
+
 import React, { useState } from 'react';
 import { useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -8,11 +12,7 @@ import Skeleton from './skeleton';
 
 interface Vote {
   like: number;
-  dislike: number;
-  clicked?: {
-    id: string;
-    like: boolean;
-  };
+  clicked: boolean;
 }
 
 async function getLikes(id: string) {
@@ -24,7 +24,7 @@ function Index() {
   const { id } = useParams();
   const queryClient = useQueryClient();
   const { data: session } = useSession();
-  const [showToast, setShowToast] = useState<boolean>(false);
+  const [showToast, setShowToast] = useState<string>('');
 
   // like 관련 코드
   const { isLoading, error, data } = useQuery<Vote>({
@@ -34,7 +34,7 @@ function Index() {
     staleTime: 5000,
   });
 
-  const postLike = async (like: boolean) => axios.post('/api/likes', { boardId: id, like });
+  const postLike = async () => axios.post('/api/likes', { boardId: id });
   const postLikeMutation = useMutation(postLike, {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['like', { board: id }] });
@@ -44,35 +44,19 @@ function Index() {
     },
   });
 
-  const deleteLike = async (likeId: string) => axios.delete(`/api/likes/${likeId}`);
-  const deleteLikeMutation = useMutation(deleteLike, {
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['like', { board: id }] });
-    },
-    onError: (err) => {
-      throw err;
-    },
-  });
-
-  const clickLike = async (vote: boolean) => {
+  const clickLike = async () => {
     if (!session) {
-      setShowToast(true);
+      setShowToast('Please login.');
       setTimeout(() => {
-        setShowToast(false);
+        setShowToast('');
       }, 1000);
-    } else if (!data?.clicked) {
-      postLikeMutation.mutate(vote);
-    } else if (
-      (vote && data.clicked.like)
-      || (!vote && !data.clicked.like)
-    ) {
-      deleteLikeMutation.mutate(data.clicked.id);
-    } else if (
-      (vote && !data.clicked.like)
-      || (!vote && data.clicked.like)
-    ) {
-      deleteLikeMutation.mutate(data.clicked.id);
-      postLikeMutation.mutate(vote);
+    } else if (data?.clicked) {
+      setShowToast('You have already liked it.');
+      setTimeout(() => {
+        setShowToast('');
+      }, 1000);
+    } else {
+      postLikeMutation.mutate();
     }
   };
 
@@ -93,32 +77,20 @@ function Index() {
           <button
             type="button"
             className="btn-primary"
-            onClick={async () => clickLike(true)}
+            onClick={async () => clickLike()}
           >
             <div className="flex flex-col justify-center items-center gap-1">
-              <svg className={`h-8 w-8 ${data?.clicked?.like === true ? 'text-yellow-500' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg className={`h-8 w-8 ${data?.clicked ? 'text-yellow-500' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
               </svg>
               <p>{String(data?.like)}</p>
-            </div>
-          </button>
-          <button
-            type="button"
-            className="btn-secondary"
-            onClick={async () => clickLike(false)}
-          >
-            <div className="flex flex-col justify-center items-center gap-1">
-              <svg className={`h-8 w-8 ${data?.clicked?.like === false ? 'text-yellow-500' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17" />
-              </svg>
-              <p>{String(data?.dislike)}</p>
             </div>
           </button>
         </div>
         {showToast
           ? (
             <div id="toast-default" className="flex items-center w-full max-w-xs p-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-500" role="alert">
-              <div className="ml-3 text-sm font-normal">Please login</div>
+              <div className="ml-3 text-sm font-normal">{showToast}</div>
             </div>
           )
           : <div style={{ height: '56px' }} />}

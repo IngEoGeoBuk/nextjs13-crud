@@ -13,13 +13,6 @@ export async function GET(
     const like = await prisma?.like.count({
       where: {
         boardId: id,
-        like: true,
-      },
-    });
-    const dislike = await prisma?.like.count({
-      where: {
-        boardId: id,
-        like: false,
       },
     });
 
@@ -36,8 +29,7 @@ export async function GET(
 
     const data = {
       like,
-      dislike,
-      clicked: clicked ? { id: clicked.id, like: clicked.like } : null,
+      clicked: !!clicked,
     };
     return NextResponse.json(data);
   } catch (error) {
