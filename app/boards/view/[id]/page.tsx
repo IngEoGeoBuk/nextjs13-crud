@@ -12,6 +12,7 @@ import AlertBox from '@/app/components/common/alertBox';
 import { useSession } from 'next-auth/react';
 import { Board } from '@prisma/client';
 import Modal from './components/modal';
+import VoteBox from './components/VoteBox';
 import CommentBox from './components/commentBox';
 
 async function getBoard(id: string) {
@@ -55,6 +56,7 @@ function Index() {
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Description</h3>
           <p className="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">{data.description}</p>
           <br />
+          <VoteBox />
           <CommentBox />
           {email === data.email && (
             <div className="text-right">

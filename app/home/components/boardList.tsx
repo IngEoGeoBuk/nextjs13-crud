@@ -26,7 +26,7 @@ function TableList({ item } : { item: Board }) {
         {dateFormat(item.createdAt)}
       </td>
       <td className="px-6 py-4">
-        {item.like}
+        0
       </td>
     </tr>
   );
