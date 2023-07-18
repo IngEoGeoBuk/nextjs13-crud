@@ -1,26 +1,37 @@
 'use client';
 
 import React from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 interface Interface {
   page: number;
-  onChangePage: (page: number) => void;
   hasPrevious: boolean;
-  clickPrevious: () => void;
+  previousPage: number;
   hasNext: boolean;
-  clickNext: () => void;
+  nextPage: number;
   pageList: number[];
 }
 
 function Pagination({
   page,
-  onChangePage,
   hasPrevious,
-  clickPrevious,
+  previousPage,
   hasNext,
-  clickNext,
+  nextPage,
   pageList,
 }: Interface) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const type = searchParams.get('type') ?? '';
+
+  const movePage = (_page: number) => {
+    if (type) {
+      router.push(`?type=${type}&page=${_page}`);
+    } else {
+      router.push(`?page=${_page}`);
+    }
+  };
+
   return (
     <nav aria-label="Page navigation example">
       <ul className="w-full flex items-center justify-center -space-x-px py-5">
@@ -28,7 +39,7 @@ function Pagination({
           <li>
             <button
               type="button"
-              onClick={clickPrevious}
+              onClick={() => movePage(previousPage)}
               className="block px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
             >
               <span className="sr-only">Previous</span>
@@ -41,7 +52,7 @@ function Pagination({
             <button
               type="button"
               aria-current="page"
-              onClick={() => onChangePage(item)}
+              onClick={() => movePage(item)}
               className={page === item
                 ? 'z-10 px-3 py-2 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
                 : 'px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'}
@@ -54,7 +65,7 @@ function Pagination({
           <li>
             <button
               type="button"
-              onClick={clickNext}
+              onClick={() => movePage(nextPage)}
               className="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
             >
               <span className="sr-only">Next</span>

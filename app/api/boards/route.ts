@@ -25,19 +25,23 @@ export async function GET(
           return {};
         case 'my':
           return { email: currentUser!.email! };
+        case 'best':
+          return { isBest: true };
         default:
           return {};
       }
     };
 
-    const total = await prisma!.board.count();
+    const total = await prisma!.board.count({
+      where: returnWhereQuery(type),
+    });
     const board = await prisma!.board.findMany({
+      where: returnWhereQuery(type),
       skip: perPage * (Number(page) - 1),
       take: perPage,
       orderBy: {
         createdAt: 'desc',
       },
-      where: returnWhereQuery(type),
       include: {
         _count: {
           select: { likes: true },
@@ -94,8 +98,6 @@ export async function POST(
         email: currentUser.email,
         title: body.title.substring(0, 30),
         description: body.title.substring(0, 300),
-        like: 0,
-        dislike: 0,
         createdAt: new Date(),
         updatedAt: null,
         ...body,

@@ -53,10 +53,9 @@ model Board {
   email String
   title String
   description String
-  players Int[]
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt
-  isPopular Boolean @default(false) 
+  isBest Boolean @default(false) 
   comments Comment[]
   replies Reply[]
   likes Like[]

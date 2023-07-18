@@ -51,12 +51,10 @@ function Index() {
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
-    const tempData = {
+    updateBoardMutation.mutate({
       title,
       description,
-      players: [1, 2, 19, 4, 5, 6, 7, 8, 9, 10, 11],
-    };
-    updateBoardMutation.mutate(tempData);
+    });
   };
 
   if (isLoading) {
