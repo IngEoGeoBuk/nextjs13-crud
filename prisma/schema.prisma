@@ -55,7 +55,6 @@ model Board {
   description String
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt
-  isBest Boolean @default(false) 
   comments Comment[]
   replies Reply[]
   likes Like[]
